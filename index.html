@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PvZ Fusion APK – Strategic Zombie Battles Evolved</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-vivid: #4ade80;
+    --green-dark: #166534;
+    --green-mid: #22c55e;
+    --soil: #1c1208;
+    --soil-light: #2a1e0f;
+    --zombie-purple: #a855f7;
+    --zombie-purple-light: #d8b4fe;
+    --cream: #fef9ef;
+    --text-main: #f0fdf4;
+    --text-muted: #86efac;
+    --border: rgba(74, 222, 128, 0.18);
+    --card-bg: rgba(22, 101, 52, 0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: #0b1a0f;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(168,85,247,0.08) 0%, transparent 60%);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 80px 24px 64px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 39px,
+      rgba(74,222,128,0.04) 39px, rgba(74,222,128,0.04) 40px
+    ),
+    repeating-linear-gradient(
+      90deg, transparent, transparent 39px,
+      rgba(74,222,128,0.04) 39px, rgba(74,222,128,0.04) 40px
+    );
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--green-vivid), var(--zombie-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    display: inline-block;
+    -webkit-text-fill-color: initial;
+    color: var(--green-vivid);
+    background: rgba(74,222,128,0.08);
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 10vw, 104px);
+    letter-spacing: 0.03em;
+    line-height: 0.95;
+    color: #fff;
+    text-shadow: 0 0 80px rgba(74,222,128,0.3);
+    margin-bottom: 8px;
+  }
+  .hero-title span {
+    color: var(--green-vivid);
+    position: relative;
+  }
+  .hero-title span::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--green-vivid), var(--zombie-purple));
+    border-radius: 2px;
+  }
+  .hero-sub {
+    font-size: clamp(15px, 2.5vw, 19px);
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 24px auto 40px;
+    font-weight: 400;
+  }
+  .cta-group {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 4px 24px rgba(34,197,94,0.35), 0 0 0 1px rgba(74,222,128,0.2);
+    transition: transform 0.18s, box-shadow 0.18s;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(34,197,94,0.45), 0 0 0 1px rgba(74,222,128,0.3);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(168,85,247,0.12);
+    border: 1px solid rgba(168,85,247,0.35);
+    color: var(--zombie-purple-light);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform 0.18s, background 0.18s;
+  }
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    background: rgba(168,85,247,0.2);
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green-vivid);
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  /* ── INTRO ── */
+  .intro-section {
+    padding: 56px 0;
+    border-top: 1px solid var(--border);
+  }
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .intro-grid h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 54px);
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .intro-grid p {
+    color: #bbf7d0;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .intro-grid p + p { margin-top: 14px; }
+
+  .stat-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--green-vivid), var(--zombie-purple));
+    border-radius: 4px 0 0 4px;
+  }
+  .stat-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--green-vivid);
+    letter-spacing: 0.05em;
+  }
+  .stat-card-desc {
+    font-size: 13px;
+    color: #86efac;
+    margin-top: 2px;
+  }
+
+  /* ── FUSION FEATURE ── */
+  .fusion-section {
+    padding: 56px 0;
+    border-top: 1px solid var(--border);
+  }
+  .fusion-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 6vw, 64px);
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .fusion-headline em {
+    font-style: normal;
+    color: var(--green-vivid);
+  }
+  .fusion-desc {
+    color: #bbf7d0;
+    font-size: 16px;
+    max-width: 620px;
+    margin-bottom: 40px;
+  }
+
+  /* ── FEATURES GRID ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .feature-card:hover {
+    border-color: rgba(74,222,128,0.4);
+    background: rgba(22,101,52,0.28);
+  }
+  .feature-icon {
+    font-size: 26px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .feature-card h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green-vivid);
+    margin-bottom: 8px;
+  }
+  .feature-card p {
+    font-size: 13.5px;
+    color: #bbf7d0;
+    line-height: 1.6;
+  }
+
+  /* ── TABLE ── */
+  .table-section {
+    padding: 56px 0;
+    border-top: 1px solid var(--border);
+  }
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-top: 24px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead tr {
+    background: rgba(34,197,94,0.1);
+  }
+  thead th {
+    padding: 14px 20px;
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-vivid);
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(74,222,128,0.05); }
+  td {
+    padding: 13px 20px;
+    color: #d1fae5;
+    vertical-align: top;
+  }
+  td:first-child {
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  /* ── STRATEGY ── */
+  .strategy-section {
+    padding: 56px 0;
+    border-top: 1px solid var(--border);
+  }
+  .tips-list {
+    list-style: none;
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .tips-list li {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 16px;
+    align-items: start;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+  }
+  .tips-list li .tip-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    color: var(--green-vivid);
+    opacity: 0.5;
+    line-height: 1;
+  }
+  .tips-list li .tip-body h4 {
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .tips-list li .tip-body p {
+    font-size: 13.5px;
+    color: #86efac;
+  }
+
+  /* ── HIGHLIGHTS ── */
+  .highlight-strip {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0 0 56px;
+  }
+  .highlights-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .chip {
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.22);
+    color: var(--green-vivid);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    background: linear-gradient(135deg, rgba(22,101,52,0.5) 0%, rgba(88,28,135,0.3) 100%);
+    border: 1px solid rgba(74,222,128,0.25);
+    border-radius: 20px;
+    padding: 56px 40px;
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(74,222,128,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-banner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 6vw, 56px);
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .cta-banner p {
+    color: #86efac;
+    font-size: 16px;
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: rgba(134,239,172,0.4);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── PROSE SECTION ── */
+  .prose-section {
+    padding: 56px 0;
+    border-top: 1px solid var(--border);
+  }
+  .prose-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 5vw, 48px);
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .prose-section p {
+    color: #bbf7d0;
+    font-size: 15.5px;
+    line-height: 1.85;
+    margin-bottom: 16px;
+    max-width: 740px;
+  }
+  .prose-section a {
+    color: var(--green-vivid);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .intro-grid { grid-template-columns: 1fr; }
+    .cta-banner { padding: 40px 24px; }
+    .hero { padding: 56px 20px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header>
+  <div class="hero">
+    <div class="badge">Fan-Made Strategy Game</div>
+    <h1 class="hero-title">PvZ <span>Fusion</span> APK</h1>
+    <p class="hero-sub">Experience a new era of strategic zombie battles — combine, adapt, and dominate with the power of plant fusion.</p>
+    <div class="cta-group">
+      <a href="https://pvzfusiondl.com/" class="btn-primary">
+        🌿 Download <strong>PvZ Fusion APK</strong>
+      </a>
+      <a href="https://pvzfusion-download.vercel.app/" class="btn-secondary">
+        ⚡ Alternative Download Mirror
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- INTRO -->
+<main>
+<section class="intro-section">
+  <div class="container">
+    <div class="intro-grid">
+      <div>
+        <p class="section-label">What is it?</p>
+        <h2>Classic PvZ Reimagined</h2>
+        <p>PvZ Fusion APK is a fan-created adaptation that keeps the tower-defense roots you love, then completely redefines them with a plant fusion system that unlocks hundreds of powerful hybrid combinations.</p>
+        <p>Unlike the original, where every plant has a fixed role, PvZ Fusion lets you merge plants into stronger, more versatile units — turning every match into a creative experiment.</p>
+      </div>
+      <div class="stat-stack">
+        <div class="stat-card">
+          <div class="stat-card-title">100+ Combos</div>
+          <div class="stat-card-desc">Fusion possibilities to discover and master</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">New Zombies</div>
+          <div class="stat-card-desc">Fresh enemy varieties demanding fresh tactics</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">∞ Replay Value</div>
+          <div class="stat-card-desc">No single "correct" strategy — every run differs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FUSION FEATURE -->
+<section class="fusion-section">
+  <div class="container">
+    <p class="section-label">Core Mechanic</p>
+    <h2 class="fusion-headline">The Fusion System <em>Changes Everything</em></h2>
+    <p class="fusion-desc">Traditional tower-defense grows predictable. Fusion breaks the formula — merge plants mid-battle, unlock hybrid abilities, and reshape your defence on the fly against waves that never stop escalating.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🌻🌸</span>
+        <h3>Plant Fusion</h3>
+        <p>Combine any two compatible plants to produce a more powerful hybrid with upgraded stats and special abilities unavailable in either parent.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚔️</span>
+        <h3>Enhanced Combat</h3>
+        <p>Fused plants hit harder, cover more ground, and introduce entirely new attack patterns that can shift the tide of even the toughest waves.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🧟</span>
+        <h3>New Zombie Types</h3>
+        <p>Face entirely new undead varieties with unexpected abilities that force you to rethink strategies you relied on in the classic game.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🧠</span>
+        <h3>Deep Strategy</h3>
+        <p>Balance resource management, fusion timing, positioning, and enemy analysis to build a defence that can withstand the hardest stages.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✨</span>
+        <h3>Improved Visuals</h3>
+        <p>Smoother animations, dynamic fusion effects, and polished visual feedback elevate the battle experience beyond the original.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔁</span>
+        <h3>High Replay Value</h3>
+        <p>With dozens of viable fusion strategies and escalating challenge, no two runs feel the same — and mastery always has another level.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE TABLE -->
+<section class="table-section">
+  <div class="container">
+    <p class="section-label">Features at a glance</p>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,48px);color:#fff;margin-bottom:6px;">Full Feature Overview</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Fusion System</td><td>Combine plants to create stronger hybrid units with unique abilities</td></tr>
+          <tr><td>New Plant Abilities</td><td>Unlock enhanced combat skills through strategic merging</td></tr>
+          <tr><td>Challenging Levels</td><td>Face increasingly difficult stages that demand adaptation</td></tr>
+          <tr><td>Strategic Gameplay</td><td>Experiment with combinations to find the most effective builds</td></tr>
+          <tr><td>Unique Zombies</td><td>Encounter new enemy varieties with surprising abilities</td></tr>
+          <tr><td>Improved Visual Effects</td><td>Enhanced animations and polished battle feedback</td></tr>
+          <tr><td>Creative Mechanics</td><td>Discover unexpected interactions between plant types</td></tr>
+          <tr><td>High Replay Value</td><td>Multiple viable strategies ensure every run stays fresh</td></tr>
+          <tr><td>Fan-Driven Experience</td><td>Inspired by community creativity and long-term PvZ love</td></tr>
+          <tr><td>Regular Discoveries</td><td>Constantly explore new fusion tactics and counter-strategies</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section class="strategy-section">
+  <div class="container">
+    <p class="section-label">Getting Started</p>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,48px);color:#fff;">Tips for New Players</h2>
+    <ul class="tips-list">
+      <li>
+        <span class="tip-num">01</span>
+        <div class="tip-body">
+          <h4>Learn Before You Fuse</h4>
+          <p>Understand the strengths and weaknesses of individual plants before experimenting with fusions — solid fundamentals make fusion choices smarter.</p>
+        </div>
+      </li>
+      <li>
+        <span class="tip-num">02</span>
+        <div class="tip-body">
+          <h4>Conserve Your Resources</h4>
+          <p>Avoid burning through sun early. A balanced defence built patiently outperforms an all-out offensive push in most stages.</p>
+        </div>
+      </li>
+      <li>
+        <span class="tip-num">03</span>
+        <div class="tip-body">
+          <h4>Study the Zombies</h4>
+          <p>Different zombie types call for different counters. Observe enemy patterns and adjust which fusion combinations you deploy on each level.</p>
+        </div>
+      </li>
+      <li>
+        <span class="tip-num">04</span>
+        <div class="tip-body">
+          <h4>Embrace Experimentation</h4>
+          <p>Some of the strongest fusion builds are found through trial and error. Don't follow guides blindly — discovering combos yourself is half the fun.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- CHIP ROW -->
+<div class="highlight-strip">
+  <div class="container">
+    <div class="highlights-inner">
+      <span class="chip">🌿 Innovative Fusion Mechanics</span>
+      <span class="chip">🧟 New Zombie Encounters</span>
+      <span class="chip">🎮 Deep Tactical Gameplay</span>
+      <span class="chip">✨ Enhanced Animations</span>
+      <span class="chip">🔁 Endless Replay Value</span>
+      <span class="chip">🌱 Community-Driven</span>
+      <span class="chip">🆓 Free to Play</span>
+      <span class="chip">📱 Mobile Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROSE -->
+<section class="prose-section">
+  <div class="container">
+    <p class="section-label">Why It Stands Out</p>
+    <h2>A Fresh Challenge for Veterans</h2>
+    <p>Many longtime Plants vs. Zombies fans eventually memorise enemy patterns and optimal strategies in the original game. PvZ Fusion APK addresses this by introducing challenges that demand entirely fresh thinking — stronger zombies, unexpected abilities, and level designs that break familiar routines.</p>
+    <p>Veteran players particularly appreciate this because it restores the excitement and uncertainty that made the original so addictive. Each stage presents unique obstacles with creative solutions waiting to be found.</p>
+    <p>Download the game from the official source at <a href="https://pvzfusiondl.com/">PvZ Fusion APK</a>, or use the <a href="https://pvzfusion-download.vercel.app/">alternative download mirror</a> if you prefer a backup source.</p>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="container">
+  <div class="cta-banner">
+    <h2>Ready to Defend Your Garden?</h2>
+    <p>Download PvZ Fusion APK now and discover what happens when strategy meets creativity.</p>
+    <div class="cta-group">
+      <a href="https://pvzfusiondl.com/" class="btn-primary">
+        🌿 Download <strong>PvZ Fusion APK</strong>
+      </a>
+      <a href="https://pvzfusion-download.vercel.app/" class="btn-secondary">
+        ⚡ Mirror Download
+      </a>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer>
+  <p>PvZ Fusion APK is a fan-made project inspired by Plants vs. Zombies. Not affiliated with Electronic Arts or PopCap Games.</p>
+</footer>
+
+</body>
+</html>
